@@ -1,0 +1,77 @@
+# Default configuration - loaded EVERY time the app starts, regardless of
+# which profile (if any) is also active. Profile-specific files like
+# application-mysql.yml only OVERRIDE what's different; anything not
+# repeated there (like the server.port below) still comes from here.
+
+spring:
+  application:
+    name: banking-application
+
+  # ---- Active profile ----
+  # "h2" is the zero-setup local database described in this file's
+  # "h2" section below. Switch to "mysql" or "postgres" by either:
+  #   1. Changing the line below to `active: mysql`, OR
+  #   2. Running with: java -jar app.jar --spring.profiles.active=mysql
+  # See docs/DATABASE_SETUP.md for the full walkthrough.
+  profiles:
+    active: h2
+
+  jpa:
+    hibernate:
+      # "update" = Hibernate compares your @Entity classes to the existing
+      # tables at startup and ALTERs them to match (creating tables that
+      # don't exist yet). Convenient for learning/local dev; in a real
+      # production system you would use "validate" (never auto-change
+      # schema) and manage schema changes with a migration tool like
+      # Flyway or Liquibase instead.
+      ddl-auto: update
+    show-sql: true
+    # show-sql prints every generated SQL statement to the console, which
+    # is invaluable while learning: you see exactly what Spring Data JPA
+    # is doing behind each repository method call.
+    properties:
+      hibernate:
+        format_sql: true
+        # Pretty-prints the SQL across multiple lines instead of one long
+        # unreadable string.
+
+  # ---- H2 (default / local) ----
+  datasource:
+    url: jdbc:h2:mem:bankingdb;DB_CLOSE_DELAY=-1
+    # jdbc:h2:mem:bankingdb  -> an IN-MEMORY database named "bankingdb"
+    #                           (nothing is written to disk; all data is
+    #                           lost when the app stops - perfect for
+    #                           learning/experimenting).
+    # DB_CLOSE_DELAY=-1      -> without this, H2 destroys the in-memory
+    #                           database the instant the last connection
+    #                           closes, which can happen between requests
+    #                           and would wipe your data mid-session. -1
+    #                           keeps it alive for the whole application
+    #                           lifetime instead.
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  h2:
+    console:
+      enabled: true
+      # Turns on a web-based database browser at /h2-console (see README)
+      # so you can run SQL and inspect tables directly in your browser -
+      # extremely useful while learning how JPA maps to actual rows.
+      path: /h2-console
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    # Shows the actual "?" placeholder values JPA binds into each SQL
+    # statement (e.g. seeing "1001" instead of just "?"), which show-sql
+    # alone does not reveal.
+    org.hibernate.orm.jdbc.bind: trace

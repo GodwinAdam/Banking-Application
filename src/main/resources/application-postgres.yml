@@ -1,0 +1,21 @@
+# Activated with: spring.profiles.active=postgres
+# See docs/DATABASE_SETUP.md for installing PostgreSQL / running it via
+# Docker and creating the "bankingdb" database first.
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankingdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: your_postgres_password_here
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  h2:
+    console:
+      enabled: false

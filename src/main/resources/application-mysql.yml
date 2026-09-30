@@ -1,0 +1,35 @@
+# Activated with: spring.profiles.active=mysql
+# (either edit application.yml's `active:` line, or pass
+#  --spring.profiles.active=mysql on the command line - see
+#  docs/DATABASE_SETUP.md for the full step-by-step setup, including how
+#  to install MySQL and create this database with Docker.)
+#
+# Everything NOT listed here (server.port, springdoc paths, jpa.show-sql,
+# etc.) still comes from application.yml - Spring merges profile files on
+# top of the base file rather than replacing it.
+
+spring:
+  datasource:
+    # Replace "bankingdb", "root", and the password with your own MySQL
+    # server's details. The database itself ("bankingdb") must already
+    # exist - see docs/DATABASE_SETUP.md for the CREATE DATABASE command.
+    url: jdbc:mysql://localhost:3306/bankingdb?useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: your_mysql_password_here
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        # Tells Hibernate which SQL "dialect" (flavor of SQL) to generate
+        # so it produces MySQL-compatible statements. Spring Boot can
+        # usually auto-detect this from the JDBC URL, but being explicit
+        # avoids ambiguity on some MySQL versions.
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  h2:
+    console:
+      # No H2 console when we're not using H2.
+      enabled: false

@@ -1,0 +1,17 @@
+# Overrides used ONLY when tests run (Maven puts src/test/resources ahead
+# of src/main/resources on the test classpath, so this file wins over the
+# main application.yml during `mvn test`).
+
+spring:
+  datasource:
+    # A differently-named in-memory database purely so test runs never
+    # collide with a real `mvn spring-boot:run` instance's data.
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+  jpa:
+    hibernate:
+      # create-drop = build the schema fresh from our @Entity classes when
+      # the test's Spring context starts, and drop it when that context
+      # shuts down. Guarantees every test run starts from a truly empty,
+      # known database state instead of accumulating leftover data.
+      ddl-auto: create-drop
+    show-sql: false
